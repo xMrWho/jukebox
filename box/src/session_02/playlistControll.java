@@ -5,8 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import javax.swing.text.TableView.TableRow;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,16 +16,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.DirectoryChooser;
 
 public class playlistControll implements Initializable{
-	private ArrayList<Song> songs;
-	private ArrayList<Playlist> list;
-    @FXML private TableView<Song> Libary; @FXML private TableView<Playlist> Playlists;
-
-    @FXML
-    private Button btnEditPlaylist;
+	public ArrayList<Song> songs;
+	public ArrayList<Playlist> list;
+	public ArrayList<Song> lib;
+    @FXML public TableView<Song> Libary; @FXML public TableView<Playlist> Playlists;
+    @FXML private Button btnEditPlaylist;
 
     @FXML
     private Button btnDeletePlaylist;
@@ -49,15 +44,13 @@ public class playlistControll implements Initializable{
 
     @FXML
     private Button btnAddSongTo;
-    Song[] s = {};
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		MyEventHandler events = new MyEventHandler(this);
 		this.songs = new ArrayList<Song>();
+		this.lib   = new ArrayList<Song>();
 		this.list  = new ArrayList<Playlist>();
-		File f = new File("C:\\Users\\VBBW\\Music\\bip.mp3");
-		Song bib = new Song(f);
-		songs.add(bib);
 		
 		TableColumn titleCol = new TableColumn("Title");
 	    titleCol.setCellValueFactory( new PropertyValueFactory<Song, String>("title"));
@@ -72,55 +65,11 @@ public class playlistControll implements Initializable{
 		ObservableList<Song> data = FXCollections.observableArrayList(songs);
 		Libary.setItems(data);
 		Libary.getColumns().addAll(titleCol, albumCol, artistCol);
-		
-		Libary.setOnMouseClicked(new EventHandler<MouseEvent>(){
-
-			@Override
-			public void handle(MouseEvent e) {
-			if(e.getClickCount() == 2){
-				Song song =  Libary.getSelectionModel().selectedItemProperty().get();
-				if(song.getPlayer() != null && song.isPlaying()){
-					song.pause();
-				}
-				else{
-					song.play();
-				}
-			}
-				
-			}
-			
-		});
-		btnFindSongs.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent event) {
-				DirectoryChooser chooser = new DirectoryChooser();
-				chooser.setTitle("Music");
-				File defaultDirectory = new File(System.getProperty("user.home"));
-				chooser.setInitialDirectory(defaultDirectory);
-				File selectedDirectory = chooser.showDialog(null);
-				System.err.println(selectedDirectory.getAbsolutePath());
-		        ArrayList<File> files = musicFinder.searchFile(selectedDirectory);
-				for(int i = 0; i < files.size(); i++){
-					Song s = new Song(files.get(i));
-					data.add(s);
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-		         
-			}
-			
-		});
-
-		Playlist rock = new Playlist();
-		rock.setName("Kellerbar Rock");
-		list.add(rock);
+		Libary.setOnMouseClicked(events.doubleClickOnLibaryItem);
+		btnFindSongs.setOnAction(events.findSongs);
 		ObservableList<Playlist> data_playlist = FXCollections.observableArrayList(list);
 		TableColumn nameCol = new TableColumn("Playlists");
-		nameCol.setCellValueFactory( new PropertyValueFactory<Playlist, String>("name"));
+		nameCol.setCellValueFactory(new PropertyValueFactory<Playlist, String>("name"));
 		nameCol.setMinWidth(200);
 		Playlists.getColumns().addAll(nameCol);
 		Playlists.setItems(data_playlist);

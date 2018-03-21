@@ -16,7 +16,7 @@ public class Starter extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		URL url = getClass().getResource("test.fxml"); 
+		URL url = getClass().getClassLoader().getResource("test/test.fxml"); 
 		FXMLLoader loader = new FXMLLoader(url);
 		Parent root = loader.load();		
 		Scene scene = new Scene(root);
