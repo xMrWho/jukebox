@@ -2,7 +2,7 @@ package test;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
+/**
 public class timer
 {
   Methods horst;
@@ -107,4 +107,19 @@ public class timer
     }
   }
   */
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public class timer{}

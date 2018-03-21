@@ -16,7 +16,7 @@ public class musicFinder {
         files = searchFile(selectedDirectory);
         print();
 	}
-	public ArrayList<File> searchFile(File dir) {
+	public static ArrayList<File> searchFile(File dir) {
 		File[] files = dir.listFiles();
 		ArrayList<File> matches = new ArrayList<File>();
 		if (files != null) {

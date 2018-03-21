@@ -9,6 +9,7 @@ import javax.swing.text.TableView.TableRow;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.DirectoryChooser;
 
 public class playlistControll implements Initializable{
 	private ArrayList<Song> songs;
@@ -55,12 +57,6 @@ public class playlistControll implements Initializable{
 		this.list  = new ArrayList<Playlist>();
 		File f = new File("C:\\Users\\VBBW\\Music\\bip.mp3");
 		Song bib = new Song(f);
-		Song s = new Song();
-		s.setTitle("Hello.mp3");
-		s.setArtist("Adele");
-		s.setAlbum("Album");
-		
-		songs.add(s);
 		songs.add(bib);
 		
 		TableColumn titleCol = new TableColumn("Title");
@@ -82,10 +78,39 @@ public class playlistControll implements Initializable{
 			@Override
 			public void handle(MouseEvent e) {
 			if(e.getClickCount() == 2){
-				Song object =  Libary.getSelectionModel().selectedItemProperty().get();
-				object.play();
+				Song song =  Libary.getSelectionModel().selectedItemProperty().get();
+				if(song.getPlayer() != null && song.isPlaying()){
+					song.pause();
+				}
+				else{
+					song.play();
+				}
 			}
 				
+			}
+			
+		});
+		btnFindSongs.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent event) {
+				DirectoryChooser chooser = new DirectoryChooser();
+				chooser.setTitle("Music");
+				File defaultDirectory = new File(System.getProperty("user.home"));
+				chooser.setInitialDirectory(defaultDirectory);
+				File selectedDirectory = chooser.showDialog(null);
+				System.err.println(selectedDirectory.getAbsolutePath());
+		        ArrayList<File> files = musicFinder.searchFile(selectedDirectory);
+				for(int i = 0; i < files.size(); i++){
+					Song s = new Song(files.get(i));
+					data.add(s);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+		         
 			}
 			
 		});

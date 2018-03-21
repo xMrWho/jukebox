@@ -23,8 +23,6 @@ public class Starter extends Application{
 		stage.setTitle("FXML Welcome");
         stage.setScene(scene);
         stage.show();
-		
-		
 	}
 
 }

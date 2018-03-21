@@ -90,7 +90,9 @@ public class Song {
 	}
 	
 
-	
+	public MediaPlayer getPlayer(){
+		return player;
+	}
 	public void play(){
 		if (this.player != null)
 	    {
